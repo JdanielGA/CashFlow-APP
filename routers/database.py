@@ -12,7 +12,7 @@ from typing import List
 database_router = APIRouter()
 
 # Desc: Create a function to get the records from the database calling the service.
-@database_router.get('/database', tags=['Database'], response_model=List[DatabaseSchema], status_code=200)
+@database_router.get('/database', tags=['Database'], response_model=List[DatabaseSchema], status_code=200, summary='Get all records - Obtener todos los registros.')
 def get_all_records():
     try:
         db = Database_session()
@@ -26,7 +26,7 @@ def get_all_records():
         raise HTTPException(status_code=500, detail=str(error))
     
 # Desc: Create a function to get a record by nit from the database calling the service.
-@database_router.get('/database/nit/{nit}', tags=['Database'], response_model=DatabaseSchema, status_code=200)
+@database_router.get('/database/nit/{nit}', tags=['Database'], response_model=DatabaseSchema, status_code=200, summary='Get record by nit - Obtener un registro por el nit.')
 def get_record_by_nit(nit: int = Path(..., title='Nit', description='Nit of the record to get.')):
     try:
         db = Database_session()
@@ -39,7 +39,7 @@ def get_record_by_nit(nit: int = Path(..., title='Nit', description='Nit of the 
         raise HTTPException(status_code=500, detail=str(error))
     
 # Desc: Create a function to get a record by name from the database calling the service.
-@database_router.get('/database/name/{name}', tags=['Database'], response_model=DatabaseSchema, status_code=200)
+@database_router.get('/database/name/{name}', tags=['Database'], response_model=DatabaseSchema, status_code=200, summary='Get record by name - Obtener un registro por el nombre.')
 def get_record_by_name(name: str = Path(description='Name of the record to get.')):
     try:
         db = Database_session()
@@ -52,7 +52,7 @@ def get_record_by_name(name: str = Path(description='Name of the record to get.'
         raise HTTPException(status_code=500, detail=str(error))
     
 # Desc: Create a function to get a record category from the database calling the service.
-@database_router.get('/database/category/{category}', tags=['Database'], response_model=List[DatabaseSchema], status_code=200)
+@database_router.get('/database/category/{category}', tags=['Database'], response_model=List[DatabaseSchema], status_code=200, summary='Get record by category - Obtener un registro por la categoría.')
 def get_record__by_category(category: str = Path(..., description='Category of the record to get.')):
     try:
         db = Database_session()
@@ -65,7 +65,7 @@ def get_record__by_category(category: str = Path(..., description='Category of t
         raise HTTPException(status_code=500, detail=str(error))
     
 # Desc: Create a function to create a new record (checking if not exits yet) in the database calling the service.
-@database_router.post('/database/create', tags=['Database'], response_model=DatabaseSchema,  status_code=201)
+@database_router.post('/database/create', tags=['Database'], response_model=DatabaseSchema,  status_code=201, summary='Create record - Crear un registro.')
 def create_record(category: str = Query(..., enum=['Cliente', 'Proveedor', 'Empleado', 'Otro']),database_schema: DatabaseSchema = Depends()):
     try:
         db = Database_session()
@@ -80,7 +80,7 @@ def create_record(category: str = Query(..., enum=['Cliente', 'Proveedor', 'Empl
         raise HTTPException(status_code=500, detail=str(error))
     
 # Desc: Create a function to update a record from the database (without add the same name of other record) calling the service.
-@database_router.put('/database/update/{nit}', tags=['Database'], response_model=DatabaseSchema, status_code=200)
+@database_router.put('/database/update/{nit}', tags=['Database'], response_model=DatabaseSchema, status_code=200, summary='Update record - Actualizar un registro.')
 def update_record(nit: int = Path(..., title='Nit', description='Nit of the record to update.'),category: str = Query(..., enum=['Cliente', 'Proveedor', 'Empleado', 'Otro']), database_schema: DatabaseSchema = Depends()):
     try:
         db = Database_session()
@@ -93,7 +93,7 @@ def update_record(nit: int = Path(..., title='Nit', description='Nit of the reco
         raise HTTPException(status_code=500, detail=str(error))
     
 # Desc: Create a function to delete a record from the database calling the service.
-@database_router.delete('/database/delete/{nit}', tags=['Database'], response_model=dict, status_code=200)
+@database_router.delete('/database/delete/{nit}', tags=['Database'], response_model=dict, status_code=200, summary='Delete record - Eliminar un registro.')
 def delete_record(nit: int = Path(..., title='Nit', description='Nit of the record to delete.')):
     try:
         db = Database_session()
@@ -106,7 +106,7 @@ def delete_record(nit: int = Path(..., title='Nit', description='Nit of the reco
         raise HTTPException(status_code=500, detail=str(error))
     
 # Desc: Create a function to delete all records from the database calling the service.
-@database_router.delete('/database/delete_all', tags=['Database'], response_model=dict, status_code=200)
+@database_router.delete('/database/delete_all', tags=['Database'], response_model=dict, status_code=200, summary='Delete all records - Eliminar todos los registros.')
 def delete_all_records():
     try:
         db = Database_session()

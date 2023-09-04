@@ -22,7 +22,7 @@ html_home_page_path = Path(__file__).parent / 'templates' / 'home_page.html'
 app.add_middleware(error_handler.ErrorHandler)
 
 # Desc: Funtion to get the home page from a HTML file.
-@app.get('/', tags=['Home'])
+@app.get('/', tags=['Home'], summary='Home page - Página de inicio.')
 async def get_home_page():
     return FileResponse(html_home_page_path)
 
