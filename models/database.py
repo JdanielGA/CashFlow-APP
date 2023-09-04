@@ -8,11 +8,10 @@ class DatabaseModel(Base_database):
     
     __tablename__ = 'database'
 
-    ref = Column(Integer, primary_key=True)
     category = Column(String(20))
-    nit = Column(Integer, primary_key=True)
+    nit = Column(Integer, primary_key=True, unique=True)
     dv = Column(Integer)
-    name = Column(String(50), primary_key=True)
+    name = Column(String(50), primary_key=True, unique=True)
     city = Column(String(50))
     adress = Column(String(255))
     email = Column(String(50))

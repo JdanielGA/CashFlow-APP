@@ -1,8 +1,9 @@
 # Desc: Import the necessary libraries and modules to launch the application.
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from middlewares import error_handler
 from config.database import engine, Base_database
 from routers.database import database_router
+from typing import List
 
 # Desc: Import the necessary libraries and modules to response the requests.
 from fastapi.responses import FileResponse
@@ -18,10 +19,10 @@ app.version = '0.0.1'
 html_home_page_path = Path(__file__).parent / 'templates' / 'home_page.html'
 
 # Desc: Add the error handler middleware to the application.
-#app.add_middleware(error_handler.ErrorHandler)
+app.add_middleware(error_handler.ErrorHandler)
 
 # Desc: Funtion to get the home page from a HTML file.
-@app.get('/home', tags=['Home'])
+@app.get('/', tags=['Home'])
 async def get_home_page():
     return FileResponse(html_home_page_path)
 

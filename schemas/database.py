@@ -6,8 +6,7 @@ from typing import Optional
 # Desc: Create the database schema with the necessary fields using the BaseModel class.
 class DatabaseSchema(BaseModel):
 
-    ref: Optional[int] = None
-    category: str = Field(default='Cliente', min_length=1, max_length=20)
+    category: str = Field(default='Cliente')
     nit: int = Field(default=0)
     dv: int = Field(default=0)
     name: str = Field(default='Razón Social', min_length=1, max_length=50)
