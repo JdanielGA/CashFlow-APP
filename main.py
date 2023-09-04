@@ -3,6 +3,7 @@ from fastapi import FastAPI, Query
 from middlewares import error_handler
 from config.database import engine, Base_database
 from routers.database import database_router
+from routers.users import users_router
 from typing import List
 
 # Desc: Import the necessary libraries and modules to response the requests.
@@ -31,3 +32,6 @@ Base_database.metadata.create_all(bind=engine)
 
 # Desc: Add the database router to the application.
 app.include_router(database_router)
+
+# Desc: Add the users router to the application.
+app.include_router(users_router)

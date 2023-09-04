@@ -10,6 +10,7 @@ class DatabaseSchema(BaseModel):
     nit: int = Field(default=0)
     dv: int = Field(default=0)
     name: str = Field(default='Razón Social', min_length=1, max_length=50)
+    last_name: Optional[str] = Field(default='Last name only for natural person', max_length=50)
     city: str = Field(default='Bogotá D.C.', min_length=1, max_length=50)
     adress: str = Field(default='Cll. 1 #1 - 1, ofi 101', min_length=1, max_length=255)
     email: str = Field(default='email@compañia.com', min_length=1, max_length=50)
