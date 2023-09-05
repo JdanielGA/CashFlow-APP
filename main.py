@@ -4,6 +4,7 @@ from middlewares import error_handler
 from config.database import engine, Base_database
 from routers.database import database_router
 from routers.users import users_router
+from routers.login import login_router
 from typing import List
 
 # Desc: Import the necessary libraries and modules to response the requests.
@@ -29,6 +30,9 @@ async def get_home_page():
 
 # Desc: Create the database tables.
 Base_database.metadata.create_all(bind=engine)
+
+# Desc: Add the login router to the application.
+app.include_router(login_router)
 
 # Desc: Add the database router to the application.
 app.include_router(database_router)
