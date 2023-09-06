@@ -8,8 +8,8 @@ class LoginService:
         self.db = db
 
     # Desc: Create a funtion for the login process.
-    def login(self, user: str, password: str):
-        user = self.db.query(UsersModel).filter(UsersModel.corporate_email == user).first()
+    def login(self, email: str, password: str):
+        user = self.db.query(UsersModel).filter(UsersModel.corporate_email == email).first()
         if user:
             if check_password_hash(user.password_hash, password):
                 return user
