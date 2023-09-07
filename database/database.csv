@@ -1,2 +1,3 @@
-id,first_name,last_name,email,password, disabled
-1,name1,last_name1,user1@email.com,pbkdf2:sha256:600000$PuafnniA4yLtpIkW$f46a80598201ac68272bbd47d3a535224819f75a84c6c296867b33be89fb275f, False
+id,first_name,last_name,email,password,role,disabled
+1,name1,last_name1,user1@email.com,pbkdf2:sha256:600000$PuafnniA4yLtpIkW$f46a80598201ac68272bbd47d3a535224819f75a84c6c296867b33be89fb275f,admin,False
+2,Name2,Last_name2,user2@email.com,pbkdf2:sha256:600000$TiYutgBgStblXAlE$03aff7bab8d22c95b2d7f4daa203591b3ba84a8d731f477c6462022df9946c49,guest,False

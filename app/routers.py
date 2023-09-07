@@ -1,5 +1,5 @@
 # Desc: Import the FastAPI libraries and modules for the routers of the app.
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from fastapi.responses import JSONResponse
 from pydantic import SecretStr
 from app.users import UsersDB
@@ -36,11 +36,10 @@ def get_user_by_id(id):
         return JSONResponse(status_code=400, content={'message': 'The id field is empty.'})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
 
 # Desc: Create a function to create a new user calling the service.
 @users_router.post('/users/create', tags=['Users'], summary='Create a new user - Crear un nuevo usuario.', dependencies=[Depends(oauth2_scheme)])
-def create_user(id, first_name, last_name, email, password: SecretStr, disabled: bool):
+def create_user(id, first_name, last_name, email, password: SecretStr, role: str = Query(..., enum = ['admin', 'user', 'guest']), disabled: bool = False):
     try:
         id_comprobation = UsersDB().get_user_by_id(id)
         email_comprobation = UsersDB().get_user_by_email(email)
@@ -51,7 +50,7 @@ def create_user(id, first_name, last_name, email, password: SecretStr, disabled:
         elif email_comprobation is not None:
             return JSONResponse(status_code=400, content={'message': 'The email already exist.'})
         
-        new_user = UsersDB().create_user(id, first_name, last_name, email, password.get_secret_value(), disabled)
+        new_user = UsersDB().create_user(id, first_name, last_name, email, password.get_secret_value(), role, disabled)
         return JSONResponse(status_code=201, content=new_user)
     
     except Exception as e:
