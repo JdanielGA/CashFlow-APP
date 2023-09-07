@@ -55,3 +55,19 @@ def create_user(id, first_name, last_name, email, password: SecretStr):
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+# Desc: Create a function to login a user calling the service.
+@users_router.post('/users/login', tags=['Users'], summary='Login a user - Iniciar sesión de un usuario.')
+def login(email, password: SecretStr):
+    try:
+        user = UsersDB().login(email, password.get_secret_value())
+        if user is None:
+            return JSONResponse(status_code=404, content={'message': 'The user does not exist.'})
+        elif user is False:
+            return JSONResponse(status_code=401, content={'message': 'The password is incorrect.'})
+        else:
+            return JSONResponse(status_code=200, content={'message': 'The user was logged successfully.', 'user': user})
+        
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

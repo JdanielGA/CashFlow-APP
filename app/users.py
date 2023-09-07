@@ -23,7 +23,12 @@ class User:
     # Desc: Function to set the password.
     def set_password(self, password):
         self._password = generate_password_hash(password)
+    
+    # Desc: Function to check the password.
+    def check_password(self, password):
+        return check_password_hash(self._password, password)
 
+    # Desc: Function to get the data from the user.
     def get_data(self):
         return self.data
 
@@ -77,7 +82,15 @@ class UsersDB:
             writer.writerow(self.user_data)
         return {'message': 'The user was created successfully.'}
     
-    # Desc: Function to check the password.
-    def check_password(self, password):
-        return check_password_hash(self._password, password)
+    # Desc: Function to login a user.
+    def login(self, email, password):
+        user = self.get_user_by_email(email)
+        if user is not None:
+            check_password = check_password_hash(user['password'], password)
+            if check_password:
+                # Desc: Return the user Full Name.
+                return user['first_name'] + ' ' + user['last_name']
+            else:
+                return False
+        return None
         
