@@ -10,8 +10,8 @@ from middlewares.autentification import oauth2_scheme
 users_router = APIRouter()
 
 # Desc: Create a function to get all the users from the database calling the service.
-@users_router.get('/users', tags=['Users'], response_model=List, summary='Get all the users - Obtener todos los usuarios.')
-def get_users(token: str = Depends(oauth2_scheme)):
+@users_router.get('/users', tags=['Users'], response_model=List, summary='Get all the users - Obtener todos los usuarios.', dependencies=[Depends(oauth2_scheme)])
+def get_users():
     users = UsersDB().get_recors()
     if users is not None:
         if len(users) > 0:
@@ -23,8 +23,8 @@ def get_users(token: str = Depends(oauth2_scheme)):
         return JSONResponse(status_code=404, content={'message': 'The database did not exist but it was created.'})
 
 # Desc: Create a function to get a user by id from the database calling the service.
-@users_router.get('/users/id/{id}', tags=['Users'], response_model=Dict, summary='Get a user by id - Obtener un usuario por id.')
-def get_user_by_id(id, token: str = Depends(oauth2_scheme)):
+@users_router.get('/users/id/{id}', tags=['Users'], response_model=Dict, summary='Get a user by id - Obtener un usuario por id.', dependencies=[Depends(oauth2_scheme)])
+def get_user_by_id(id):
     try:
         user = UsersDB().get_user_by_id(id)
         if user is not None:
@@ -39,8 +39,8 @@ def get_user_by_id(id, token: str = Depends(oauth2_scheme)):
     
 
 # Desc: Create a function to create a new user calling the service.
-@users_router.post('/users/create', tags=['Users'], summary='Create a new user - Crear un nuevo usuario.')
-def create_user(id, first_name, last_name, email, password: SecretStr, disabled: bool, token: str = Depends(oauth2_scheme)):
+@users_router.post('/users/create', tags=['Users'], summary='Create a new user - Crear un nuevo usuario.', dependencies=[Depends(oauth2_scheme)])
+def create_user(id, first_name, last_name, email, password: SecretStr, disabled: bool):
     try:
         id_comprobation = UsersDB().get_user_by_id(id)
         email_comprobation = UsersDB().get_user_by_email(email)
@@ -58,8 +58,8 @@ def create_user(id, first_name, last_name, email, password: SecretStr, disabled:
         raise HTTPException(status_code=500, detail=str(e))
     
 # Desc: Create a function to login a user calling the service.
-@users_router.post('/users/login', tags=['Users'], summary='Login a user - Iniciar sesión de un usuario.')
-def login(email, password: SecretStr, token: str = Depends(oauth2_scheme)):
+@users_router.post('/users/login', tags=['Users'], summary='Login a user - Iniciar sesión de un usuario.', dependencies=[Depends(oauth2_scheme)])
+def login(email, password: SecretStr):
     try:
         user = UsersDB().login(email, password.get_secret_value())
         if user is None:
