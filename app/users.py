@@ -76,7 +76,7 @@ class UsersDB:
 
     # Desc: Function to create a new user calling the User class.
     def create_user(self, id, first_name, last_name, email, password, disabled: bool = False):
-        new_user = User(id, first_name, last_name, email, password)
+        new_user = User(id, first_name, last_name, email, password, disabled)
         self.user_data = new_user.get_data()
         with open(self.__databae_path, 'a', encoding='utf-8', newline='') as file:
             writer = csv.DictWriter(file, fieldnames=self.user_data.keys())
