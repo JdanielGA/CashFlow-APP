@@ -1,23 +1,24 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from fastapi.responses import JSONResponse
 import csv
 
 
 # Desc: Create the class to manage the users.
 class User:
-    def __init__(self, id: str, first_name: str, last_name: str, email: str, password: str):
+    def __init__(self, id: str, first_name: str, last_name: str, email: str, password: str, disabled: bool = False):
         self.data = {}
         self.id = id
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
         self._password = generate_password_hash(password)
+        self.disbled = disabled
         self.data = {
             'id': self.id,
             'first_name': self.first_name,
             'last_name': self.last_name,
             'email': self.email,
-            'password': self._password
+            'password': self._password,
+            'disabled': self.disbled
         }
     
     # Desc: Function to set the password.
@@ -42,7 +43,7 @@ class UsersDB:
 
     # Desc: Function to get the data from the csv file.
     def get_recors(self):
-        headers = ['id', 'first_name', 'last_name', 'email', 'password']
+        headers = ['id', 'first_name', 'last_name', 'email', 'password', 'disabled']
         # Desc: Verify if the file has 
         try:
             with open(self.__databae_path, 'r', encoding='utf-8', newline='') as file:
@@ -74,7 +75,7 @@ class UsersDB:
 
 
     # Desc: Function to create a new user calling the User class.
-    def create_user(self, id, first_name, last_name, email, password):
+    def create_user(self, id, first_name, last_name, email, password, disabled: bool = False):
         new_user = User(id, first_name, last_name, email, password)
         self.user_data = new_user.get_data()
         with open(self.__databae_path, 'a', encoding='utf-8', newline='') as file:
@@ -88,9 +89,8 @@ class UsersDB:
         if user is not None:
             check_password = check_password_hash(user['password'], password)
             if check_password:
-                # Desc: Return the user Full Name.
-                return user['first_name'] + ' ' + user['last_name']
+                data = {'id': user['id'], 'first_name': user['first_name'], 'last_name': user['last_name'], 'email': user['email']}
+                return data
             else:
                 return False
         return None
-        

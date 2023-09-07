@@ -4,3 +4,6 @@ venv
 # Ignore the __pycache__ folder of python and the .pyc files
 __pycache__
 *.pyc
+
+# Ignore the .env file
+.env
