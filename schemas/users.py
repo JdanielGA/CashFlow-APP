@@ -13,4 +13,4 @@ class UsersSchema(BaseModel):
     company_phone: int = Field(default=0)
     corporate_email: str = Field(default='position@company.com', min_length=1, max_length=50)
     password_hash: Optional[str] = Field(default='password_hash', min_length=1, max_length=255)
-    permission_level: int = Field(default=0)
+    status: bool = Field(default=True)

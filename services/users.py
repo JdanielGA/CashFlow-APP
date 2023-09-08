@@ -33,7 +33,7 @@ class UserService:
             position=user.position,
             company_phone=user.company_phone,
             corporate_email=user.corporate_email,
-            permission_level=user.permission_level
+            status=user.status
         )
         new_user.set_password(user.password_hash)
         self.db.add(new_user)

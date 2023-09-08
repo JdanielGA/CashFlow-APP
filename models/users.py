@@ -1,6 +1,6 @@
 # Desc: Import the necessary libraries and modules to create the users model.
 from config.database import Base_database
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -17,7 +17,7 @@ class UsersModel(Base_database):
     company_phone = Column(Integer)
     corporate_email = Column(String(50))
     password_hash = Column(String)
-    permission_level = Column(Integer)
+    status = Column(Boolean)
     database = relationship('DatabaseModel', back_populates='users')
 
     # Desc: Create a funtion to generate the password hash.

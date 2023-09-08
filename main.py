@@ -1,10 +1,11 @@
 # Desc: Import the necessary libraries and modules to launch the application.
 from fastapi import FastAPI, Query
-from middlewares import error_handler, autentification
+from middlewares import authentication, error_handler
 from config.database import engine, Base_database
 from routers.database import database_router
 from routers.users import users_router
 from routers.login import login_router
+from middlewares.authentication import authentication_router
 
 # Desc: Import the necessary libraries and modules to response the requests.
 from fastapi.responses import FileResponse
@@ -38,3 +39,6 @@ app.include_router(database_router)
 
 # Desc: Add the users router to the application.
 app.include_router(users_router)
+
+# Desc: Add the autentification middleware to the application.
+app.include_router(authentication_router)
