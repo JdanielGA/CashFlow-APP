@@ -23,5 +23,5 @@ async def get_home_page():
 app.include_router(users_router)
 
 # Desc: Include the routers in the app.
-app.include_router(login_router)
+app.include_router(login_router, include_in_schema=False)
 

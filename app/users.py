@@ -19,6 +19,7 @@ class User:
             'last_name': self.last_name,
             'email': self.email,
             'password': self._password,
+            'role': self.role,
             'disabled': self.disbled
         }
     
@@ -76,7 +77,7 @@ class UsersDB:
 
 
     # Desc: Function to create a new user calling the User class.
-    def create_user(self, id, first_name, last_name, email, password, role, disabled: bool = False):
+    def create_user(self, id, first_name, last_name, email, password, role, disabled):
         new_user = User(id, first_name, last_name, email, password, role, disabled)
         self.user_data = new_user.get_data()
         with open(self.__databae_path, 'a', encoding='utf-8', newline='') as file:

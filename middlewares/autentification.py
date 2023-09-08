@@ -46,7 +46,6 @@ def get_user_current(token: str = Depends(oauth2_scheme)):
     except JWTError:
         raise HTTPException(status_code=401, detail='Invalid credentials', headers={'WWW-Authenticate': 'Bearer'})
     user = UsersDB().get_user_by_id(username)
-    print(user)
     if user is None:
         raise HTTPException(status_code=401, detail='Invalid credentials', headers={'WWW-Authenticate': 'Bearer'})
     return user
@@ -73,7 +72,7 @@ def get_scopes(authorize: str = SecurityScopes(['admin', 'user', 'guest'])):
 
 @login_router.get('/login/user')
 def user_login(user: dict = Depends(get_user_disable_current)):
-    return {'id': user['id'], 'first_name': user['first_name'], 'last_name': user['last_name'], 'email': user['email']}
+    return {'id': user['id'], 'first_name': user['first_name'], 'last_name': user['last_name'], 'email': user['email'], 'role': user['role']}
 
 @login_router.post('/token')
 def login_token(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -81,24 +80,3 @@ def login_token(form_data: OAuth2PasswordRequestForm = Depends()):
     access_token_expires = timedelta(minutes=30)
     access_token_jwt = create_access_token({'sub': user['id']}, time_expire=access_token_expires)
     return {'access_token': access_token_jwt, 'token_type': 'bearer'}
-
-# Desc: Create a test route to check admin permissions.
-@login_router.get('/test')
-def test_route(role: str = Depends(get_current_role)):
-    if role != 'admin':
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Not enough permissions.')
-    return {'message': 'This is the admin zone.'}
-    
-# Desc: Create a test route to check user permissions, but the admin can access too.
-@login_router.get('/test2')
-def test_route(role: str = Depends(get_current_role)):
-    if role not in ['admin', 'user']:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Not enough permissions.')
-    return {'message': 'This is the user zone.'}
-
-# Desc: Create a test route to check guest permissions, but the admin and user can access too.
-@login_router.get('/test3')
-def test_route(role: str = Depends(get_current_role)):
-    if role not in ['admin', 'user', 'guest']:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Not enough permissions.')
-    return {'message': 'This is the guest zone.'}
