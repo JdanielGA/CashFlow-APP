@@ -12,7 +12,6 @@ class DatabaseModel(Base):
 
     __tablename__ = 'database'
 
-    ref = Column(Integer, primary_key=True, index=True)
     category = Column(Enum(Categories), nullable=False)
     tin = Column(Integer, primary_key=True, index=True, unique=True)
     dv = Column(Integer)

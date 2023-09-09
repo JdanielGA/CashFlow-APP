@@ -7,6 +7,7 @@ from pathlib import Path
 from config.database import Base, engine
 from routers.users import users_router
 from routers.login import login_router
+from routers.database import database_router
 
 # Desc: Instance of the FastAPI class.
 app = FastAPI()
@@ -26,8 +27,12 @@ async def get_home_page():
 # Desc: Create the database tables.
 Base.metadata.create_all(bind=engine)
 
+# Desc: Import the database routers.
+app.include_router(database_router)
+
 # Desc: Import the user routers.
 app.include_router(users_router)
 
 # Desc: Import the login router.
 app.include_router(login_router, include_in_schema=False)
+
