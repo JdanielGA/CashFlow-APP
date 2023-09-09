@@ -1,54 +1,56 @@
 # Desc: Import the necessary libraries and modules to create the user services.
 from sqlalchemy import not_
-from models.users import UsersModel
-from schemas.users import UsersSchema
 
-# Desc: Create a class to manage the users services.
+# Desc: Import components from my own modules to create the user services.
+from models.users import UserModel
+from schemas.users import UserSchema
+
+# Desc: Class user to manage the services.
 class UserService:
-    def __init__(self, db) -> None:
+    def __init__(self, db):
         self.db = db
 
-    # Desc: Create a funtion to get all the users.
+    # Desc: Function to get all users.
     def get_all_users(self):
-        users_list = self.db.query(UsersModel).all()
-        return users_list
+        users = self.db.query(UserModel).all()
+        return users
     
-    # Desc: Create a funtion to get a user by id.
-    def get_user_by_id(self, id: int):
-        user = self.db.query(UsersModel).filter(UsersModel.id == id).first()
+    # Desc: Function to get a user by ID number.
+    def get_user_by_id_number(self, id_number: int):
+        user = self.db.query(UserModel).filter(UserModel.id_number == id_number).first()
         return user
     
-    # Desc: Create a funtion to get a user by company id.
-    def get_user_by_company_id(self, company_id: int):
-        user = self.db.query(UsersModel).filter(UsersModel.company_id == company_id).first()
+    # Desc: Function to get a user by company ID.
+    def get_user_by_company_id(self, company_id: str):
+        user = self.db.query(UserModel).filter(UserModel.company_id == company_id).first()
         return user
     
-    # Desc: Create a funtion to create a new user implementing the password hash with the set_password funtion from the model.
-    def create_user(self, user: UsersSchema):
-        new_user = UsersModel(
-            company_id=user.company_id,
-            id=user.id,
-            first_name=user.first_name,
-            last_name=user.last_name,
-            position=user.position,
-            company_phone=user.company_phone,
-            corporate_email=user.corporate_email,
-            status=user.status
-        )
-        new_user.set_password(user.password_hash)
+    # Desc: Function to get a user by email.
+    def get_user_by_email(self, email: str):
+        user = self.db.query(UserModel).filter(UserModel.email == email).first()
+        return user
+    
+    # Desc: Function to create a new user using password hash.
+    def create_user(self, user: UserSchema):
+        new_user = UserModel(**user.model_dump())
+        new_user.generate_password(user.password)
         self.db.add(new_user)
         self.db.commit()
         self.db.refresh(new_user)
         return new_user
     
-    # Desc: Create a funtion to update a user by company id checking if the user possible id already exists.
-    def update_user(self, company_id: int, user: UsersSchema):
+    # Desc: Function to update a user.
+    def update_user(self, id_to_search: int, user: UserSchema):
         with self.db.begin() as transaction:
-            user_to_update = self.db.query(UsersModel).filter(UsersModel.company_id == company_id).first()
+            user_to_update = self.db.query(UserModel).filter(UserModel.id_number == id_to_search).first()
             if user_to_update:
                 user_data = user.model_dump()
-                comprobation_id = self.db.query(UsersModel).filter(UsersModel.id == user_data['id'],not_(UsersModel.company_id == user_data['company_id'])).first()
-                if comprobation_id:
+                verification_company_id = self.db.query(UserModel).filter(UserModel.company_id == user_data['company_id'], not_(UserModel.id_number == id_to_search)).first()
+                verification_email = self.db.query(UserModel).filter(UserModel.email == user_data['email'], not_(UserModel.id_number == id_to_search)).first()
+                if verification_company_id:
+                    transaction.rollback()
+                    return False
+                if verification_email:
                     transaction.rollback()
                     return False
                 for key, value in user_data.items():
@@ -57,16 +59,41 @@ class UserService:
                 return True
             else:
                 transaction.rollback()
-                return False
+                return None
             
-    # Desc: Create a funtion to delete a user by company id.
-    def delete_user(self, company_id: int):
+    # Desc: Function to update a user password.
+    def update_user_password(self, email: str, old_password: str, new_password: str):
         with self.db.begin() as transaction:
-            user_to_delete = self.db.query(UsersModel).filter(UsersModel.company_id == company_id).first()
+            user_to_update = self.db.query(UserModel).filter(UserModel.email == email).first()
+            if user_to_update:
+                if user_to_update.check_password(old_password):
+                    user_to_update.generate_password(new_password)
+                    self.db.commit()
+                    return True
+                else:
+                    transaction.rollback()
+                    return False
+            else:
+                transaction.rollback()
+                return None
+            
+    # Desc: Function to delete a user.
+    def delete_user(self, id_number: int):
+        with self.db.begin() as transaction:
+            user_to_delete = self.db.query(UserModel).filter(UserModel.id_number == id_number).first()
             if user_to_delete:
                 self.db.delete(user_to_delete)
                 self.db.commit()
                 return True
             else:
                 transaction.rollback()
-                return False
+                return None
+    
+    # Desc: Function to login a user.
+    def login_user(self, email: str, password: str):
+        user = self.db.query(UserModel).filter(UserModel.email == email).first()
+        if not user:
+            return None
+        if not user.check_password(password):
+            return None
+        return user

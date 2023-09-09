@@ -1,23 +1,23 @@
-# Desc: Import the necessary libraries and modules to create the database connection.
-import os
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+# Desc: Libraries and modules to create the database connection.
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+import os
 
-# Desc: Create the database path and the name.
-sqlite_file_name = '../database/database.sqlite'
+# Desc: Create the database path (if the file does not exist, it will be created).
+sqlite_file_name = '../database/data_store.sqlite'
 
-# Desc: Path to the directory where the database is located.
-database_dir = os.path.dirname(os.path.realpath(__file__))
+# Desc: Directory where the database is located.
+sqlite_dir = os.path.dirname(os.path.abspath(__file__))
 
-# Desc: Create the database URL.
-database_url = f'sqlite:///{os.path.join(database_dir, sqlite_file_name)}'
+#Desc: Create the database URL.
+sqlite_url = f'sqlite:///{os.path.join(sqlite_dir, sqlite_file_name)}'
 
 # Desc: Create the database engine.
-engine = create_engine(database_url, echo=True)
+engine = create_engine(sqlite_url, echo=True, connect_args={'check_same_thread': False})
 
 # Desc: Create the database session.
-Database_session = sessionmaker(bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Desc: Create the base class for the database tables.
-Base_database = declarative_base()
+# Desc: Create the base class for the database.
+Base = declarative_base()

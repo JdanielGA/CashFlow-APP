@@ -1,44 +1,33 @@
-# Desc: Import the necessary libraries and modules to launch the application.
-from fastapi import FastAPI, Query
-from middlewares import authentication, error_handler
-from config.database import engine, Base_database
-from routers.database import database_router
+# Desc: Import the main libraries and modules.
+from fastapi import FastAPI
+from fastapi.responses import FileResponse
+from pathlib import Path
+
+# Desc: Import components from my own modules.
+from config.database import Base, engine
 from routers.users import users_router
 from routers.login import login_router
-from middlewares.authentication import authentication_router
 
-# Desc: Import the necessary libraries and modules to response the requests.
-from fastapi.responses import FileResponse
-from pathlib import Path 
-
-# Desc: Create an instance of the FastAPI class.
+# Desc: Instance of the FastAPI class.
 app = FastAPI()
-app.title = 'CashFlow APP'
-app.description = 'CashFlow APP is a application that allows manage the cash flow of a company.'
-app.version = '0.0.1'
+app.title = "FastAPI Demo"
+app.description = "This is a simple demo of FastAPI."
+app.version = "1.0.0"
 
-# Desc: Create a path to the home page.
-html_home_page_path = Path(__file__).parent / 'templates' / 'home_page.html'
 
-# Desc: Funtion to get the home page from a HTML file.
+# Desc: Path to the home page
+html_home_page_path = Path(__file__).parent / 'template' / 'index.html'
+
+# Desc: Home page using the FileResponse class and the html_home_page_path variable.
 @app.get('/', tags=['Home'], summary='Home page - Página de inicio.')
 async def get_home_page():
     return FileResponse(html_home_page_path)
 
-# Desc: Add the error handler middleware to the application.
-app.add_middleware(error_handler.ErrorHandler)
-
 # Desc: Create the database tables.
-Base_database.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
-# Desc: Add the login router to the application.
-app.include_router(login_router)
-
-# Desc: Add the database router to the application.
-app.include_router(database_router)
-
-# Desc: Add the users router to the application.
+# Desc: Import the user routers.
 app.include_router(users_router)
 
-# Desc: Add the autentification middleware to the application.
-app.include_router(authentication_router)
+# Desc: Import the login router.
+app.include_router(login_router, include_in_schema=False)

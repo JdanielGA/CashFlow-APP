@@ -1,3 +1,0 @@
-# CASHFLOW APP - README
-
-## Description
