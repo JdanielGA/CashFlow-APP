@@ -8,6 +8,7 @@ from config.database import Base, engine
 from routers.users import users_router
 from routers.login import login_router
 from routers.database import database_router
+from routers.cash_flow import cash_flow_router
 
 # Desc: Instance of the FastAPI class.
 app = FastAPI()
@@ -36,3 +37,5 @@ app.include_router(users_router)
 # Desc: Import the login router.
 app.include_router(login_router, include_in_schema=False)
 
+# Desc: Import the Cash Flow routers.
+app.include_router(cash_flow_router)
