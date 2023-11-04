@@ -22,6 +22,7 @@ class CashFlowServices:
     # Desc: Function to create a Cash Flow record.
     def create(self, cash_flow: CashFlowSchema):
         new_record = CashFlowModel(**cash_flow.model_dump())
+        new_record.calculate_total()
         self.db.add(new_record)
         self.db.commit()
         self.db.refresh(new_record)

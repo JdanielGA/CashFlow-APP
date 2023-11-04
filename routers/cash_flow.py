@@ -7,7 +7,7 @@ from typing import List
 
 # Desc: Import components from my own modules to create the Cash Flow routers.
 from routers.login import oauth2_scheme, get_current_active_user_role
-from schemas.cash_flow import CashFlowSchema
+from schemas.cash_flow import CashFlowSchema, CashFlowCreateSchema
 from services.cash_flow import CashFlowServices
 from config.database import SessionLocal
 
@@ -29,8 +29,8 @@ def get_all_cash_flow_records():
         raise HTTPException(status_code=500, detail='Internal server error.')
     
 # Desc: Function to create a Cash Flow record calling the service class.
-@cash_flow_router.post('/cash_flow/create', tags=['Cash Flow'], response_model=CashFlowSchema)
-def create_new_record(cash_flow: CashFlowSchema = Depends()):
+@cash_flow_router.post('/cash_flow/create', tags=['Cash Flow'], response_model=CashFlowCreateSchema)
+def create_new_record(cash_flow: CashFlowCreateSchema = Depends()):
     try:
         db = SessionLocal()
         check_ref_number = CashFlowServices(db).get_by_ref_number(cash_flow.ref_number)
